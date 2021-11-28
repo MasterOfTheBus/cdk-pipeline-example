@@ -15,6 +15,7 @@ export interface CodeStarConnectionPipelineProps {
 
 export class CodeStarConnectionPipeline extends Construct {
     public readonly pipeline: Pipeline;
+    public readonly outputArtifact: Artifact;
 
     constructor(scope: Construct, id: string, props: CodeStarConnectionPipelineProps) {
         super(scope, id);
@@ -48,5 +49,6 @@ export class CodeStarConnectionPipeline extends Construct {
             stageName: 'Build',
             actions: [actionDefs.buildAction]
         });
+        this.outputArtifact = actionDefs.outputArtifact;
     }
 }

@@ -9,10 +9,12 @@ export class CdkPipelineExampleStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    const connectionArn = "arn:aws:codestar-connections:us-east-1:025257542471:connection/b53232ef-36cd-40e2-90ce-4bed059aed57";
+
     // Define the underlying CodePipeline
     const bucket = new Bucket(this, 'PipelineBucket');
     const sourceInfo = new CodeStarConnectionDef({
-      codeStarConnection: "arn:aws:codestar-connections:us-east-1:025257542471:connection/b53232ef-36cd-40e2-90ce-4bed059aed57",
+      codeStarConnection: connectionArn,
       repoOwner: "MasterOfTheBus",
       repo: "test_lambda_deploy"
     });
@@ -26,13 +28,19 @@ export class CdkPipelineExampleStack extends cdk.Stack {
       pipelineName: 'CdkPipelineExample',
       codePipeline: codestarPipeline.pipeline,
       synth: new ShellStep('Synth', {
-        input: CodePipelineSource.gitHub('MasterOfTheBus/cdk-pipeline-example', 'main'),
+        input: CodePipelineSource.connection('MasterOfTheBus/cdk-pipeline-example', 'main', {
+          connectionArn: connectionArn
+        }),
         commands: ['npm ci', 'npm run build', 'npx cdk synth']
       })
     });
 
     pipeline.addStage(new MyPipelineAppStage(this, "test", {
-      env: { account: "025257542471", region: "us-east-1"}
+      bucket: bucket,
+      s3Artifact: codestarPipeline.outputArtifact,
+      stageProps: {
+        env: { account: "025257542471", region: "us-east-1" }
+      }
     }));
   }
 }

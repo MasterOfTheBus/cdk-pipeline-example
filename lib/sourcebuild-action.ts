@@ -11,6 +11,7 @@ export interface CodeBuildConstructProps {
 
 export class CodeBuildConstruct extends Construct {
     public readonly buildAction: Action;
+    public readonly outputArtifact: Artifact;
 
     constructor(scope: Construct, id: string, props: CodeBuildConstructProps) {
         super(scope, id);
@@ -24,10 +25,12 @@ export class CodeBuildConstruct extends Construct {
             })
         })
 
+        this.outputArtifact = new Artifact();
         this.buildAction = new CodeBuildAction({
             actionName: `SourceBuild`,
             project: project,
-            input: props.primarySourceArtifact
+            input: props.primarySourceArtifact,
+            outputs: [this.outputArtifact]
         });
 
         // TODO: Implement secondary artifacts and sources if needed
