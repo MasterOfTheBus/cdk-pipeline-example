@@ -6,10 +6,11 @@ import { CodeStarConnectionDef } from "./sourcedef";
 import { Bucket } from "@aws-cdk/aws-s3";
 
 export interface CodeStarConnectionPipelineProps {
+    primarySourceInfo: CodeStarConnectionDef;
+    deployBucket: Bucket;
     pipelineName?: string;
     crossAccount?: boolean;
-    primarySourceInfo: CodeStarConnectionDef;
-    sourceInfo?: [CodeStarConnectionDef];
+    // TODO: Allow for multiple sources and artifacts
 }
 
 export class CodeStarConnectionPipeline extends Construct {
@@ -23,9 +24,6 @@ export class CodeStarConnectionPipeline extends Construct {
             pipelineName: props.pipelineName || 'MyPipeline',
             crossAccountKeys: props.crossAccount || false
         });
-
-        // Define the Actions
-        const bucket = new Bucket(this, 'PipelineBucket');
 
         // Define the primary source action
         const sourceOutput = new Artifact(`source`);
@@ -44,7 +42,7 @@ export class CodeStarConnectionPipeline extends Construct {
         // Define the build action
         const actionDefs = new CodeBuildConstruct(this, 'BuildDefs', {
             primarySourceArtifact: sourceOutput,
-            deployBucket: bucket
+            deployBucket: props.deployBucket
         });
         this.pipeline.addStage({
             stageName: 'Build',

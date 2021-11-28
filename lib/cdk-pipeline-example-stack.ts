@@ -1,40 +1,30 @@
 import * as cdk from '@aws-cdk/core';
 import { CodePipeline, CodePipelineSource, ShellStep } from '@aws-cdk/pipelines';
 import { MyPipelineAppStage } from './my-pipeline-app-stage';
-import * as codepipeline from '@aws-cdk/aws-codepipeline';
-import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
-import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
+import { CodeStarConnectionPipeline } from './codestar-pipeline';
+import { Bucket } from "@aws-cdk/aws-s3";
+import { CodeStarConnectionDef } from './sourcedef';
 
 export class CdkPipelineExampleStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Define the underlying CodePipeline stack
-    let pipelineName = process.env.PIPELINE_NAME || 'Pipeline';
-    let repoOwner = process.env.REPO_OWNER || ''; // TODO: Default value?
-    let repo = process.env.REPO || '';
-    let codeStarConnection = process.env.CONNECTION || '';
-    
-    const sourceOutput = new codepipeline.Artifact();
-    const sourceAction = new codepipeline_actions.CodeStarConnectionsSourceAction({
-      actionName: 'GitHub_Source',
-      owner: repoOwner,
-      repo: repo,
-      output: sourceOutput,
-      connectionArn: codeStarConnection,
+    // Define the underlying CodePipeline
+    const bucket = new Bucket(this, 'PipelineBucket');
+    const sourceInfo = new CodeStarConnectionDef({
+      codeStarConnection: "arn:aws:codestar-connections:us-east-1:025257542471:connection/b53232ef-36cd-40e2-90ce-4bed059aed57",
+      repoOwner: "MasterOfTheBus",
+      repo: "test_lambda_deploy"
     });
-
-    const underlyingPipe = new codepipeline.Pipeline(this, pipelineName, {
-      crossAccountKeys: false
-    });
-    const stage = underlyingPipe.addStage({
-      stageName: 'Source',
-      actions: [sourceAction]
+    const codestarPipeline = new CodeStarConnectionPipeline(this, 'CodeStarPipeline', {
+      deployBucket: bucket,
+      primarySourceInfo: sourceInfo
     })
 
     // The code that defines your stack goes here
     const pipeline = new CodePipeline(this, 'Pipeline', {
       pipelineName: 'CdkPipelineExample',
+      codePipeline: codestarPipeline.pipeline,
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub('MasterOfTheBus/cdk-pipeline-example', 'main'),
         commands: ['npm ci', 'npm run build', 'npx cdk synth']
