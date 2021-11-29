@@ -1,11 +1,13 @@
 import { Construct } from "@aws-cdk/core";
 import { Artifact } from "@aws-cdk/aws-codepipeline";
 import { Action, CodeBuildAction } from "@aws-cdk/aws-codepipeline-actions";
-import { Artifacts, Project } from "@aws-cdk/aws-codebuild";
+import { Artifacts, Project, Source } from "@aws-cdk/aws-codebuild";
 import { Bucket } from "@aws-cdk/aws-s3";
+import { GithubSourceDef } from "./sourcedef";
 
 export interface CodeBuildConstructProps {
     primarySourceArtifact: Artifact;
+    sourceInfo: GithubSourceDef;
     deployBucket: Bucket;
 }
 
@@ -19,6 +21,10 @@ export class CodeBuildConstruct extends Construct {
         // Define the CodeBuild Project
         const project = new Project(this, 'SourceBuildProject', {
             projectName: 'SourceBuildProject',
+            source: Source.gitHub({
+                owner: props.sourceInfo.repoOwner,
+                repo: props.sourceInfo.repo
+            }),
             artifacts: Artifacts.s3({
                 // Use name from the buildspec
                 bucket: props.deployBucket

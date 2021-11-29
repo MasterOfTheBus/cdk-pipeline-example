@@ -15,3 +15,18 @@ export class CodeStarConnectionDef {
         this.repoOwner = props.repoOwner;
     }
 };
+
+export interface GithubSourceDefProps {
+    repo: string;
+    repoOwner: string;
+}
+
+export class GithubSourceDef {
+    public readonly repo: string;
+    public readonly repoOwner: string;
+
+    constructor(props: GithubSourceDefProps) {
+        this.repo = props.repo;
+        this.repoOwner = props.repoOwner;
+    }
+}

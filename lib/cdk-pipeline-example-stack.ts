@@ -25,7 +25,6 @@ export class CdkPipelineExampleStack extends cdk.Stack {
 
     // The code that defines your stack goes here
     const pipeline = new CodePipeline(this, 'Pipeline', {
-      pipelineName: 'CdkPipelineExample',
       codePipeline: codestarPipeline.pipeline,
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.connection('MasterOfTheBus/cdk-pipeline-example', 'main', {
