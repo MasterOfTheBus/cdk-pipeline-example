@@ -1,8 +1,9 @@
-import * as cdk from '@aws-cdk/core';
-import { Function, InlineCode, Runtime } from '@aws-cdk/aws-lambda';
+import { Construct } from 'constructs';
+import * as cdk from 'aws-cdk-lib/core';
+import { Function, InlineCode, Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class MyLambdaStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+    constructor(scope: Construct, id: string, props?: cdk.StackProps) {
       super(scope, id, props);
 
       new Function(this, 'LambdaFunction', {
