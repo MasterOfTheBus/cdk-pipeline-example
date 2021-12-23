@@ -9,7 +9,7 @@ export class CdkPipelineExampleStack extends Stack {
 
     const source = new CodeStarConnectionDef({
       // A CodeStar Connection ARN
-      codeStarConnection: "arn:aws:codestar-connections:us-east-1:025257542471:connection/b53232ef-36cd-40e2-90ce-4bed059aed57",
+      codeStarConnection: "arn:aws:codestar-connections:us-east-1:000000000000:connection/11111111-2222-3333-4444-555555555555",
       repo: "cdk-pipeline-example",
       repoOwner: "MasterOfTheBus",
       branch: "main"
