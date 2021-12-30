@@ -28,7 +28,9 @@ export class CdkPipelineExampleStack extends Stack {
     const pipeline = new CodePipelineConstruct(this, 'CodePipeline', {
       pipelineSource: pipelineSource,
       source: codeSource,
-      artifactBucketArn: bucketArn
+      artifactBucketArn: bucketArn,
+      githubUser: 'masterofthebus',
+      githubEmail: 'yendisng@gmail.com'
     });
 
     pipeline.pipeline.addStage(
