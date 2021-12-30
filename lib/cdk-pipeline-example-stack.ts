@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Stack, StackProps } from 'aws-cdk-lib';
-import { CodePipelineConstruct, CodeStarConnectionDef } from '@masterofthebus/cdk-pipeline-lib/lib';
+import { CodePipelineConstruct, CodeStarConnectionDef } from '@masterofthebus/cdk-pipeline-lib';
 import { MyPipelineAppStage } from './my-pipeline-app-stage';
 
 export class CdkPipelineExampleStack extends Stack {
