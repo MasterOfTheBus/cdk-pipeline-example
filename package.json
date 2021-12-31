@@ -11,7 +11,7 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "@masterofthebus/cdk-pipeline-lib": "^0.1.13",
+    "@masterofthebus/cdk-pipeline-lib": "^0.1.14",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "aws-cdk-lib": "^2.0.0",
