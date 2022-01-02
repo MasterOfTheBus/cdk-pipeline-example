@@ -24,17 +24,19 @@ export class CdkPipelineExampleStack extends Stack {
     });
 
     const bucketArn = 'arn:aws:s3:::sng-lambda-deployments-bucket';
+    const artifactKey = 'artifacts.zip';
 
     const pipeline = new CodePipelineConstruct(this, 'CodePipeline', {
       pipelineSource: pipelineSource,
       source: codeSource,
       artifactBucketArn: bucketArn,
+      artifactKey: artifactKey,
       githubUser: 'masterofthebus',
       githubEmail: 'yendisng@gmail.com'
     });
 
     pipeline.pipeline.addStage(
-      new MyPipelineAppStage(this ,'TestLambda', bucketArn, `${codeSource.repo}/artifacts.zip`, {
+      new MyPipelineAppStage(this ,'TestLambda', bucketArn, `${codeSource.repo}/${artifactKey}`, {
         env: { account: '025257542471', region: 'us-east-1' }
       })
     )
